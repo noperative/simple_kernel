@@ -1,0 +1,79 @@
+Test 1: Memory Initialization and Allocation
+Test 2: Memory Defragmentation
+Test 3: Process Creation
+Test 3: Process Yielding and Cleanup
+
+__Test Case 1: Memory Management Initialization and Allocation__
+
+Determine that memory management can allocate memory out of
+the free list. 
+
+Done by printing out the free memory linked list before and after a 
+malloc command. Then return to initial state by freeing the memory.
+
+Sample Result:
+Before: 
+===Header 1 | size 620144, address at 35200===
+====Header 2 | size 2531311, address at 1662976====
+
+After:
+===Header 1 | size: 608080, address at 47264====
+====Header 2 | size 2531311, address at 1662976====
+
+__Test Case 2: Memory Management Defragmentation__
+
+Determine that kfree is successfully merging smaller chunks of
+freed memory.
+
+Done by allocation contiguous pairs of memory and freeing them.
+Similar to the previous test case it should return to the 2 initial
+headers after freeing to make defragmentation work.
+
+Sample Result:
+Before: 
+===Header 1 | size 620144, address at 35200===
+====Header 2 | size 2531311, address at 1662976====
+
+After allocation:
+===Header 1 | size: 608080, address at 47264====
+====Header 2 | size 2531311, address at 1662976====
+
+After free 1: 
+===Header 1 | size 6032, address at 35200===
+===Header 1 | size 608080, address at 47264===
+====Header 3 | size 2531311, address at 1662976====
+
+After free 2: 
+===Header 1 | size 620144, address at 35200===
+====Header 2 | size 2531311, address at 1662976====
+
+__Test Case 3: Process Creation__
+
+Determine we can correctly take a PCB and add a process to it
+
+Create a process, check the PCB table that it got allocated a
+stack 
+
+Sample Result:
+Before:
+PCB table of all blocked processes
+
+After creation:
+PCB table has one entry that is ready
+
+When dispatching:
+dispatch grabs the process and context switches
+Hello World is printed (root process is the test process)
+
+__Test Case 4: Process Yielding and Cleanup__
+
+Determine that a process can yield and switch to
+other processes
+
+Add a yield loop to the test process so that it
+loops forever and never reaches the end of the
+kernel init code
+
+Sample Result:
+Hello World is printed
+(line that should not be printed never pints)

@@ -1,0 +1,258 @@
+
+This file is to include your testing documentation. The file is to be
+in plain text ASCII and properly spaced and edited so that when it is
+viewed on a Linux machine it is readable. Not all ASCII files created
+on a Windows machine display as expected due to the differences with
+respect to how new lines and carriage returns are treated. Line widths
+are to be limited to 80 characters.
+
+1) Send Test 1
+-------------------------------------------------------------------
+Purpose: To determine that sends will block the sender
+
+Description: 
+Root process creates a dummy infinite loop process
+Root process attempts to send to the dummy process
+The dummy process starts printing because root is blocked now
+
+Output (shortened):
+
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+Test Result: Passed
+===================================================================
+
+2) Send Test 2
+-------------------------------------------------------------------
+
+Description:
+
+Root creates a process that will receive a message from root
+Root attempts to send to the process
+The process runs and receives from root
+Root prints the bytes transferred
+
+Output:
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Test Case 2: retval is 8
+
+Test Result: Passed
+===================================================================
+3) Receive Test 1
+
+Purpose: To determine that recvs will block the receiver
+
+Description: 
+Root process creates a dummy infinite loop process
+Root process attempts to receive from the dummy process
+The dummy process starts printing because root is blocked now
+
+Output (shortened):
+
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+Test Result: Passed
+-------------------------------------------------------------------
+===================================================================
+4) Receive Test 2
+
+Purpose: To determine that a receiving process will be unblocked
+when sent to
+
+Description:
+Root creates a process that will send a message to root
+Root attempts to receive from the process
+The process runs and sends to root
+Root prints the bytes transferred
+
+Output:
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Test Case 4: retval is 8
+
+Test Result: Passed
+-------------------------------------------------------------------
+===================================================================
+5) Send Failure
+-------------------------------------------------------------------
+Purpose: To determine failure when sending to self
+
+Description:
+
+Root gets it's own PID from sysgetpid()
+Root sends to itself
+Output should return as -2
+
+Output:
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Attempting to send to 2
+Test Case 5: retval is -2
+
+Test Result: Pass
+===================================================================
+6) Receive Failure 1
+-------------------------------------------------------------------
+Purpose: To determine failure when receiving from self
+
+Description:
+
+Root gets it's own PID from sysgetpid()
+Root recvs from itself
+Output should return as -2
+
+Output:
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Attempting to recv from 2
+Test Case 6: retval is -2
+
+Test Result: Pass
+===================================================================
+7) Receive Failure 2
+-------------------------------------------------------------------
+Purpose: To determine failure when receiving from non-existent proc
+
+Description:
+
+Root recvs from a random PID which should not be used yet (39)
+Output should return as -1
+
+Output:
+
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Attempting to recv from 39
+Test Case 7: retval is -1
+
+Test Result: Pass
+===================================================================
+
+8) Time sharing test
+-------------------------------------------------------------------
+Purpose: to determine that the timer interrupts will allow programs
+to share processing time
+
+Description:
+
+Switch to test case 8 in user.c
+2 processes are started that are infinite loops with no yield
+If the timer does not work then we will only see 1 character printed
+if it does then we will see 2 characters printed
+
+Output: (shortened)
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Test Result: Pass
+==========================================================
+
+9) Kill Test 1
+---------------------------------------------------------------------
+Purpose: to determine that you can successfully kill a process
+
+Description:
+
+Switch to test case 9 in user.c
+One process runs with an infinite loop of printing.
+On the next timer interrupt the root process then kills
+the infinite loop.
+If it does when we do not seen anymore printing
+
+Output:
+
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+create inited
+Root has been called
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO°
+
+Test Result: Pass
+===============================================================
+
+10) Kill Test 2
+------------------------------------------------------------------
+Purpose: to determine that killed processes unblock receivers
+
+Description:
+
+Switch to test case 10 in user.c
+Creates a dummy process that kills itself
+Root tries to receive from dummy process, which blocks it
+Dummy process kills itself which makes root return with result -1
+
+Output:
+
+CPSC 415, 2017W1
+32 Bit Xeros -1.0.0 - even before beta
+Located at: 0 to 6440
+Max addr is 4194303 3fffff
+memory inited
+dispatcher inited
+context inited
+create inited
+Root has been called
+Im a dummy, time to kill myself
+Test Case 10: retval is -1
+ß
+
+Test Result: Pass
+==================================================================

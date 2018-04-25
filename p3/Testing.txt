@@ -1,0 +1,250 @@
+
+This file is to include your testing documentation. The file is to be
+in plain text ASCII and properly spaced and edited so that when it is
+viewed on a Linux machine it is readable. Not all ASCII files created
+on a Windows machine display as expected due to the differences with
+respect to how new lines and carriage returns are treated. Line widths
+are to be limited to 80 characters.
+
+
+============================================
+Test Case 1: Signal Priority and Interruption
+--------------------------------------------
+Description:
+Testing if the kernel is able to prioritize
+signals and stack them
+
+Method:
+
+Test1 sets 2 handlers that print on running
+and finishing, and yield inbetween. 
+Test 1 then signals itself with the first signal.
+The first handler will signal the process with 
+the higher priority signal before yielding. 
+Next time it is switched to handler 2 will run 
+before handler 1 finishes.
+
+Output:
+
+Starting Test 1
+PID: 1
+Handlers set, signaling
+Handler 1 Running
+Handler 2 Running
+Handler 2 Leaving
+Handler 1 Leaving
+Test 1 done
+
+Result: Pass
+=============================================
+Test Case 2: Working syssighandler()
+---------------------------------------------
+Description:
+
+Testing if syssighandler can correctly set a handler
+
+Method:
+
+Test2 sets a handler1 to a signal. Then it sets
+another handler2 to the same signal and inspects
+the old handler. If the address is the same as
+handler 1 then the syssighandler is both setting and
+returning properly.
+
+Output:
+
+Starting Test 2
+Address of handler1: 9537
+Address in old handler: 9537
+Test 2 done
+
+Result: Pass
+
+================================================
+Test Case 3: Working syskill()
+------------------------------------------------
+Description:
+
+Testing if syskill can correctly send signals to
+processes
+
+Method:
+
+Test3 sets a handler to a signal. Then it signals
+itself with that signal and yields. If syskill works
+then the next time it is switched into the process
+instead runs the handler code
+
+Output:
+
+Starting Test 3
+PID: 1
+Handlers set, signaling
+Handler 2 Running
+Handler 2 Leaving
+Test 3 done
+
+Result: Pass
+================================================
+Test Case 4: Working syswait()
+------------------------------------------------
+Description:
+
+Testing if syswait correctly stops a process until
+the the target dies out
+
+Method:
+
+Test4 creates a child process. The child process then
+waits on the root process. The root process yields again, 
+to make sure the child is waiting. Next it terminates, which
+wakes up the child process.
+
+Output:
+
+Starting Test 4
+Child1::waiting...
+test4 parent ending...
+Parent terminated, now I'm up!
+Test 4 done
+
+Result: Pass
+
+================================================
+Test Case 5: Invalid sysopen() arguments
+------------------------------------------------
+Description:
+
+Testing is sysopen rejects an invalid argument
+
+Method:
+
+Test5 calls sysopen on 5, which is not a valid
+device. The FD returned is -1.
+
+Output:
+
+Starting Test 5
+FD is -1
+Test 5 done
+
+Result: Pass
+
+================================================
+Test Case 6: Invalid syswrite argument
+------------------------------------------------
+Description:
+
+Testing that syswrite correctly rejects an invalid
+write to an fd
+
+Method:
+
+Since keyboard always fails on write, we open a
+keyboard in Test6 and then attempt to write to it.
+It will always return -1 because it's not supported.
+
+Output:
+
+Starting Test 6
+Opened keyboard, FD: 0
+Result: -1
+Test 6 done
+
+Result: Pass
+================================================
+Test Case 7: Invalid sysioctl command
+------------------------------------------------
+Description:
+
+Testing that sysioctl with an invalid command
+is rejected
+
+Method:
+
+Open a keyboard. Send a sysioctl command with an
+invalid command number. It should return -1 if
+not supported.
+
+Output:
+
+Starting Test 7
+Opened keyboard, FD: 0
+Result: -1
+Test 7 done
+
+Result: Pass
+
+================================================
+Test Case 8: sysread with a full buffer
+------------------------------------------------
+Description:
+
+Testing that we read the correct amount of characters
+with a full buffer
+
+Method:
+
+Open an echo keyboard. The process sleeps for a bit and
+allows us to type 2 or more characters on the keyboard.
+Once awake the process attempts to read the first character.
+It should be the first listed character.
+
+
+Starting Test 8
+Opened echo keyboard, FD: 0
+Before I wake up, type 2+ characters manually
+as
+I'm up... printing
+a
+Test 8 done
+
+Result: Pass
+================================================
+Test Case A: Working signal 31 (kill)
+------------------------------------------------
+Description:
+
+Testing is signal 31 works properly to kill
+a process
+
+Method:
+
+TestA creates a child process which is just an
+infinite loop. TestA then yields to demonstrate
+that the child process loops. The next time slice
+TestA then sends signal 31 to the child, which
+should stop it. Test A then prints the end of the
+test, and child will not continue looping
+
+Output:
+
+Starting Test A
+LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
+LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLTest A done
+
+Result: Pass
+
+================================================
+Test Case B: Working EOF
+------------------------------------------------
+
+Description: 
+
+Testing if changing the EOF actually works.
+
+Method: TestB opens a keyboard and sends an ioctl
+to change the EOF to 2. Then it tries to read 4
+characters. Instead we will type 1234  which should
+prompt it to end at 2.
+
+Output:
+
+Starting Test B
+Opened echo keyboard, FD: 0
+Please type '1234'
+12
+Read only: 2 characters
+Test B done
+
+Result: Pass
